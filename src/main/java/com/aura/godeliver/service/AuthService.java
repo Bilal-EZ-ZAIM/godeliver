@@ -1,0 +1,9 @@
+package com.aura.godeliver.service;
+
+import com.aura.godeliver.dto.RegisterRequestDto;
+import com.aura.godeliver.dto.RegisterResponseDto;
+
+public interface AuthService {
+
+    RegisterResponseDto register(RegisterRequestDto request);
+}

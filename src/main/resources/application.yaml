@@ -2,5 +2,17 @@ spring:
   application:
     name: godeliver
 
-  mvc:
-    throw-exception-if-no-handler-found: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/godeliver
+    username: godeliver
+    password: godeliver_dev
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
