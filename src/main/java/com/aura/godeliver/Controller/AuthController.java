@@ -1,5 +1,7 @@
 package com.aura.godeliver.controller;
 
+import com.aura.godeliver.dto.LoginRequestDto;
+import com.aura.godeliver.dto.LoginResponseDto;
 import com.aura.godeliver.dto.RegisterRequestDto;
 import com.aura.godeliver.dto.RegisterResponseDto;
 import com.aura.godeliver.exception.ApiResponse;
@@ -21,26 +23,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-    private final MessageService messageService;
+        private final AuthService authService;
+        private final MessageService messageService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<RegisterResponseDto>> register(
-            @Valid @RequestBody RegisterRequestDto request) {
+        @PostMapping("/register")
+        public ResponseEntity<ApiResponse<RegisterResponseDto>> register(
+                        @Valid @RequestBody RegisterRequestDto request) {
 
-        RegisterResponseDto result = authService.register(request);
+                RegisterResponseDto result = authService.register(request);
 
-        ApiResponse<RegisterResponseDto> response = new ApiResponse<>(
-                true,
-                HttpStatus.CREATED.value(),
-                messageService.getMessage(
-                        SuccessCode.USER_REGISTERED.getMessageKey()
-                ),
-                List.of(result)
-        );
+                ApiResponse<RegisterResponseDto> response = new ApiResponse<>(
+                                true,
+                                HttpStatus.CREATED.value(),
+                                messageService.getMessage(
+                                                SuccessCode.USER_REGISTERED.getMessageKey()),
+                                List.of(result));
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+                return ResponseEntity
+                                .status(HttpStatus.CREATED)
+                                .body(response);
+        }
+
+        @PostMapping("/login")
+        public ResponseEntity<ApiResponse<LoginResponseDto>> login(
+                        @Valid @RequestBody LoginRequestDto request) {
+
+                LoginResponseDto result = authService.login(request);
+
+                ApiResponse<LoginResponseDto> response = new ApiResponse<>(
+                                true,
+                                HttpStatus.OK.value(),
+                                messageService.getMessage(
+                                                SuccessCode.USER_LOGGED_IN.getMessageKey()),
+                                List.of(result));
+
+                return ResponseEntity.ok(response);
+        }
+
 }

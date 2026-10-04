@@ -2,7 +2,6 @@ spring:
   application:
     name: godeliver
 
-
   datasource:
     url: jdbc:postgresql://localhost:5432/godeliver
     username: godeliver
@@ -16,3 +15,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+security:
+  jwt:
+    secret: "godeliver-development-secret-key-2026-at-least-32-characters"
+    access-token-expiration: 900

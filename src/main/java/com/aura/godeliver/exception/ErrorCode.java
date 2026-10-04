@@ -7,7 +7,8 @@ public enum ErrorCode {
     VALIDATION_ERROR("error.validation"),
     ENDPOINT_NOT_FOUND("error.endpoint.notFound"),
     INTERNAL_ERROR("error.internal"),
-    VALIDATION_FAILED("error.validation.failed");
+    VALIDATION_FAILED("error.validation.failed"),
+    INVALID_CREDENTIALS("error.auth.invalidCredentials");
 
 
     private final String messageKey;
