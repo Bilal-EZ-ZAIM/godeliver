@@ -9,11 +9,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+        private final MessageSource messageSource;
 
         // =========================================================================
         // Validation errors - @Valid
@@ -39,7 +45,11 @@ public class GlobalExceptionHandler {
                 ApiResponse<Object> response = new ApiResponse<>(
                                 false,
                                 HttpStatus.BAD_REQUEST.value(),
-                                "Validation failed",
+                                ErrorCode.VALIDATION_FAILED.name(),
+                                messageSource.getMessage(
+                                                ErrorCode.VALIDATION_FAILED.getMessageKey(),
+                                                null,
+                                                LocaleContextHolder.getLocale()),
                                 List.of(),
                                 errors);
 
@@ -70,7 +80,11 @@ public class GlobalExceptionHandler {
                 ApiResponse<Object> response = new ApiResponse<>(
                                 false,
                                 HttpStatus.BAD_REQUEST.value(),
-                                "Validation failed",
+                                ErrorCode.VALIDATION_FAILED.name(),
+                                messageSource.getMessage(
+                                                ErrorCode.VALIDATION_FAILED.getMessageKey(),
+                                                null,
+                                                LocaleContextHolder.getLocale()),
                                 List.of(),
                                 errors);
 
@@ -94,7 +108,11 @@ public class GlobalExceptionHandler {
                 ApiResponse<Object> response = new ApiResponse<>(
                                 false,
                                 HttpStatus.NOT_FOUND.value(),
-                                ex.getMessage(),
+                                ErrorCode.RESOURCE_NOT_FOUND.name(),
+                                messageSource.getMessage(
+                                                ErrorCode.RESOURCE_NOT_FOUND.getMessageKey(),
+                                                null,
+                                                LocaleContextHolder.getLocale()),
                                 List.of(),
                                 List.of());
 
@@ -114,7 +132,11 @@ public class GlobalExceptionHandler {
                 ApiResponse<Object> response = new ApiResponse<>(
                                 false,
                                 HttpStatus.NOT_FOUND.value(),
-                                "Endpoint not found",
+                                ErrorCode.ENDPOINT_NOT_FOUND.name(),
+                                messageSource.getMessage(
+                                                ErrorCode.ENDPOINT_NOT_FOUND.getMessageKey(),
+                                                null,
+                                                LocaleContextHolder.getLocale()),
                                 List.of(),
                                 List.of());
 
@@ -135,7 +157,11 @@ public class GlobalExceptionHandler {
                 ApiResponse<Object> response = new ApiResponse<>(
                                 false,
                                 HttpStatus.NOT_FOUND.value(),
-                                "Endpoint not found",
+                                ErrorCode.ENDPOINT_NOT_FOUND.name(),
+                                messageSource.getMessage(
+                                                ErrorCode.ENDPOINT_NOT_FOUND.getMessageKey(),
+                                                null,
+                                                LocaleContextHolder.getLocale()),
                                 List.of(),
                                 List.of());
 
@@ -143,6 +169,33 @@ public class GlobalExceptionHandler {
                                 .status(HttpStatus.NOT_FOUND)
                                 .body(response);
         }
+        // =========================================================================
+        // Email already exists - 409
+        // =========================================================================
+
+        @ExceptionHandler(EmailAlreadyExistsException.class)
+        public ResponseEntity<ApiResponse<Object>> handleEmailAlreadyExistsException(
+                        EmailAlreadyExistsException ex) {
+
+                String message = messageSource.getMessage(
+                                ex.getErrorCode().getMessageKey(),
+                                null,
+                                LocaleContextHolder.getLocale());
+
+                ApiResponse<Object> response = new ApiResponse<>(
+                                false,
+                                HttpStatus.CONFLICT.value(),
+                                ex.getErrorCode().name(),
+                                message,
+                                List.of(),
+                                List.of());
+
+                return ResponseEntity
+                                .status(HttpStatus.CONFLICT)
+                                .body(response);
+        }
+
+
         // =========================================================================
         // Unexpected errors - 500
         // =========================================================================
@@ -158,12 +211,17 @@ public class GlobalExceptionHandler {
                 ApiResponse<Object> response = new ApiResponse<>(
                                 false,
                                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                                "An unexpected error occurred",
+                                ErrorCode.INTERNAL_ERROR.name(),
+                                messageSource.getMessage(
+                                                ErrorCode.INTERNAL_ERROR.getMessageKey(),
+                                                null,
+                                                LocaleContextHolder.getLocale()),
                                 List.of(),
                                 List.of());
-
                 return ResponseEntity
                                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(response);
         }
+
+        
 }

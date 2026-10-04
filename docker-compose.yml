@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: godeliver-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: godeliver
+      POSTGRES_USER: godeliver
+      POSTGRES_PASSWORD: godeliver_dev
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - godeliver-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  godeliver-postgres-data:

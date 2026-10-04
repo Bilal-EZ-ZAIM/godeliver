@@ -12,6 +12,7 @@ public class ApiResponse<T> {
 
     private boolean success;
     private int status;
+    private String code;
     private String message;
     private List<T> data;
     private List<ApiError> errors;
@@ -34,12 +35,14 @@ public class ApiResponse<T> {
     public ApiResponse(
             boolean success,
             int status,
+            String code,
             String message,
             List<T> data,
             List<ApiError> errors
     ) {
         this.success = success;
         this.status = status;
+        this.code = code;
         this.message = message;
         this.data = data;
         this.errors = errors;
