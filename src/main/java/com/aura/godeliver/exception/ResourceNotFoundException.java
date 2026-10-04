@@ -1,8 +1,13 @@
 package com.aura.godeliver.exception;
 
+import lombok.Getter;
+
+@Getter
 public class ResourceNotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    private final ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
+
+    public ResourceNotFoundException() {
+        super();
     }
 }

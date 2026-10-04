@@ -11,4 +11,5 @@ public interface AuthService {
     RegisterResponseDto register(RegisterRequestDto request);
 
     LoginResult login(LoginRequestDto request);
+    
 }
