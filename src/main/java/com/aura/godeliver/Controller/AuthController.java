@@ -2,16 +2,17 @@ package com.aura.godeliver.controller;
 
 import com.aura.godeliver.dto.LoginRequestDto;
 import com.aura.godeliver.dto.LoginResponseDto;
+import com.aura.godeliver.dto.LoginResult;
 import com.aura.godeliver.dto.RegisterRequestDto;
 import com.aura.godeliver.dto.RegisterResponseDto;
 import com.aura.godeliver.exception.ApiResponse;
 import com.aura.godeliver.exception.SuccessCode;
 import com.aura.godeliver.service.AuthService;
 import com.aura.godeliver.service.MessageService;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,18 +47,28 @@ public class AuthController {
 
         @PostMapping("/login")
         public ResponseEntity<ApiResponse<LoginResponseDto>> login(
-                        @Valid @RequestBody LoginRequestDto request) {
+                        @Valid @RequestBody LoginRequestDto request,
+                        HttpServletResponse httpResponse) {
 
-                LoginResponseDto result = authService.login(request);
+                LoginResult result = authService.login(request);
+
+                Cookie refreshTokenCookie = new Cookie(
+                                "refresh_token",
+                                result.refreshToken());
+
+                refreshTokenCookie.setHttpOnly(true);
+                refreshTokenCookie.setSecure(true);
+                refreshTokenCookie.setPath("/api/v1/auth");
+
+                httpResponse.addCookie(refreshTokenCookie);
 
                 ApiResponse<LoginResponseDto> response = new ApiResponse<>(
                                 true,
                                 HttpStatus.OK.value(),
                                 messageService.getMessage(
                                                 SuccessCode.USER_LOGGED_IN.getMessageKey()),
-                                List.of(result));
+                                List.of(result.response()));
 
                 return ResponseEntity.ok(response);
         }
-
 }

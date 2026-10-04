@@ -20,3 +20,4 @@ security:
   jwt:
     secret: "godeliver-development-secret-key-2026-at-least-32-characters"
     access-token-expiration: 900
+    refresh-token-expiration: 2592000

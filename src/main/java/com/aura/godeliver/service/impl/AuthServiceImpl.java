@@ -2,6 +2,8 @@ package com.aura.godeliver.service.impl;
 
 import com.aura.godeliver.dto.LoginRequestDto;
 import com.aura.godeliver.dto.LoginResponseDto;
+import com.aura.godeliver.dto.LoginResult;
+import com.aura.godeliver.dto.RefreshTokenResult;
 import com.aura.godeliver.dto.RegisterRequestDto;
 import com.aura.godeliver.dto.RegisterResponseDto;
 import com.aura.godeliver.entity.User;
@@ -11,7 +13,7 @@ import com.aura.godeliver.mapper.UserMapper;
 import com.aura.godeliver.repository.UserRepository;
 import com.aura.godeliver.security.JwtService;
 import com.aura.godeliver.service.AuthService;
-
+import com.aura.godeliver.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public RegisterResponseDto register(RegisterRequestDto request) {
@@ -44,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponseDto login(LoginRequestDto request) {
+    public LoginResult login(LoginRequestDto request) {
 
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(InvalidCredentialsException::new);
@@ -56,12 +59,21 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException();
         }
 
-        String accessToken = jwtService.generateAccessToken(user);
+        String accessToken =
+                jwtService.generateAccessToken(user);
 
-        return new LoginResponseDto(
+        RefreshTokenResult refreshTokenResult =
+                refreshTokenService.create(user.getId());
+
+        LoginResponseDto response = new LoginResponseDto(
                 accessToken,
                 "Bearer",
                 jwtService.getAccessTokenExpirationSeconds()
+        );
+
+        return new LoginResult(
+                response,
+                refreshTokenResult.rawToken()
         );
     }
 }
