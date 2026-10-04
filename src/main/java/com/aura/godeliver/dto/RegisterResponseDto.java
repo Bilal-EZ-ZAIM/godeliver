@@ -1,7 +1,6 @@
-
 package com.aura.godeliver.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record RegisterResponseDto(
@@ -11,7 +10,7 @@ public record RegisterResponseDto(
         String email,
         String phone,
         String description,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }
