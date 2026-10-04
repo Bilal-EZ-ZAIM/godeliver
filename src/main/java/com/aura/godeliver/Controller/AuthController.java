@@ -57,7 +57,7 @@ public class AuthController {
                                 result.refreshToken());
 
                 refreshTokenCookie.setHttpOnly(true);
-                refreshTokenCookie.setSecure(true);
+                refreshTokenCookie.setSecure(false); // Set to true in production
                 refreshTokenCookie.setPath("/api/v1/auth");
 
                 httpResponse.addCookie(refreshTokenCookie);
@@ -68,6 +68,48 @@ public class AuthController {
                                 messageService.getMessage(
                                                 SuccessCode.USER_LOGGED_IN.getMessageKey()),
                                 List.of(result.response()));
+
+                return ResponseEntity.ok(response);
+        }
+
+        @PostMapping("/refresh")
+        public ResponseEntity<ApiResponse<LoginResponseDto>> refresh(
+                        @CookieValue(name = "refresh_token") String refreshToken) {
+
+                LoginResponseDto result = authService.refresh(refreshToken);
+
+                ApiResponse<LoginResponseDto> response = new ApiResponse<>(
+                                true,
+                                HttpStatus.OK.value(),
+                                "Token refreshed successfully",
+                                List.of(result));
+
+                return ResponseEntity.ok(response);
+        }
+
+        @PostMapping("/logout")
+        public ResponseEntity<ApiResponse<Void>> logout(
+                        @CookieValue(name = "refresh_token") String refreshToken,
+                        HttpServletResponse httpResponse) {
+
+                authService.logout(refreshToken);
+
+                Cookie refreshTokenCookie = new Cookie(
+                                "refresh_token",
+                                null);
+
+                refreshTokenCookie.setHttpOnly(true);
+                refreshTokenCookie.setSecure(false);
+                refreshTokenCookie.setPath("/api/v1/auth");
+                refreshTokenCookie.setMaxAge(0);
+
+                httpResponse.addCookie(refreshTokenCookie);
+
+                ApiResponse<Void> response = new ApiResponse<>(
+                                true,
+                                HttpStatus.OK.value(),
+                                "Logout successful",
+                                List.of());
 
                 return ResponseEntity.ok(response);
         }
