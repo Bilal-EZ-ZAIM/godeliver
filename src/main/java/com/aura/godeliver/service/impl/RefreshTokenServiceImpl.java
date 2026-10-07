@@ -2,6 +2,7 @@ package com.aura.godeliver.service.impl;
 
 import com.aura.godeliver.dto.RefreshTokenResult;
 import com.aura.godeliver.entity.RefreshToken;
+import com.aura.godeliver.exception.InvalidRefreshTokenException;
 import com.aura.godeliver.repository.RefreshTokenRepository;
 import com.aura.godeliver.security.TokenHashService;
 import com.aura.godeliver.service.RefreshTokenService;
@@ -18,86 +19,73 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final TokenHashService tokenHashService;
+        private final RefreshTokenRepository refreshTokenRepository;
+        private final TokenHashService tokenHashService;
 
-    @Value("${security.jwt.refresh-token-expiration}")
-    private long refreshTokenExpirationSeconds;
+        @Value("${security.jwt.refresh-token-expiration}")
+        private long refreshTokenExpirationSeconds;
 
-    private final SecureRandom secureRandom = new SecureRandom();
+        private final SecureRandom secureRandom = new SecureRandom();
 
-    @Override
-    public RefreshTokenResult create(UUID userId) {
+        @Override
+        public RefreshTokenResult create(UUID userId) {
 
-        String rawToken = generateToken();
+                String rawToken = generateToken();
 
-        RefreshToken refreshToken = new RefreshToken();
+                RefreshToken refreshToken = new RefreshToken();
 
-        refreshToken.setUserId(userId);
+                refreshToken.setUserId(userId);
 
-        refreshToken.setTokenHash(
-                tokenHashService.hash(rawToken)
-        );
+                refreshToken.setTokenHash(
+                                tokenHashService.hash(rawToken));
 
-        refreshToken.setExpiresAt(
-                Instant.now().plusSeconds(
-                        refreshTokenExpirationSeconds
-                )
-        );
+                refreshToken.setExpiresAt(
+                                Instant.now().plusSeconds(
+                                                refreshTokenExpirationSeconds));
 
-        RefreshToken savedToken =
+                RefreshToken savedToken = refreshTokenRepository.save(refreshToken);
+
+                return new RefreshTokenResult(
+                                rawToken,
+                                savedToken);
+        }
+
+        @Override
+        public RefreshToken verify(String rawToken) {
+
+                String tokenHash = tokenHashService.hash(rawToken);
+
+                RefreshToken refreshToken = refreshTokenRepository.findByTokenHash(tokenHash)
+                                .orElseThrow(
+                                                InvalidRefreshTokenException::new);
+
+                if (refreshToken.getRevokedAt() != null) {
+                        throw new InvalidRefreshTokenException();
+                }
+
+                if (refreshToken.getExpiresAt().isBefore(Instant.now())) {
+                        throw new InvalidRefreshTokenException();
+                }
+
+                return refreshToken;
+        }
+
+        @Override
+        public void revoke(RefreshToken refreshToken) {
+
+                refreshToken.setRevokedAt(Instant.now());
+
                 refreshTokenRepository.save(refreshToken);
-
-        return new RefreshTokenResult(
-                rawToken,
-                savedToken
-        );
-    }
-
-    @Override
-    public RefreshToken verify(String rawToken) {
-
-        String tokenHash = tokenHashService.hash(rawToken);
-
-        RefreshToken refreshToken =
-                refreshTokenRepository.findByTokenHash(tokenHash)
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Invalid refresh token"
-                                )
-                        );
-
-        if (refreshToken.getRevokedAt() != null) {
-            throw new IllegalArgumentException(
-                    "Refresh token has been revoked"
-            );
         }
 
-        if (refreshToken.getExpiresAt().isBefore(Instant.now())) {
-            throw new IllegalArgumentException(
-                    "Refresh token has expired"
-            );
+        private String generateToken() {
+
+                byte[] randomBytes = new byte[64];
+
+                secureRandom.nextBytes(randomBytes);
+
+                return Base64.getUrlEncoder()
+                                .withoutPadding()
+                                .encodeToString(randomBytes);
         }
-
-        return refreshToken;
-    }
-
-    @Override
-    public void revoke(RefreshToken refreshToken) {
-
-        refreshToken.setRevokedAt(Instant.now());
-
-        refreshTokenRepository.save(refreshToken);
-    }
-
-    private String generateToken() {
-
-        byte[] randomBytes = new byte[64];
-
-        secureRandom.nextBytes(randomBytes);
-
-        return Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(randomBytes);
-    }
 }

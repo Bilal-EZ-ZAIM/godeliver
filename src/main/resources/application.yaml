@@ -18,6 +18,6 @@ spring:
 
 security:
   jwt:
-    secret: "godeliver-development-secret-key-2026-at-least-32-characters"
+    secret: "5S80pWAdOmPTTe1uKX22Ww66nCTlmIGKAFgafy4tZyYisjnGqpBcYSN4IgkPG7aV4Vh5c1geZs9Gp7GJiuJ8+Q=="
     access-token-expiration: 900
     refresh-token-expiration: 2592000

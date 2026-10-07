@@ -3,12 +3,12 @@ package com.aura.godeliver.security;
 import com.aura.godeliver.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 
@@ -20,11 +20,10 @@ public class JwtServiceImpl implements JwtService {
 
     public JwtServiceImpl(
             @Value("${security.jwt.secret}") String secret,
-            @Value("${security.jwt.access-token-expiration}") long accessTokenExpirationSeconds
-    ) {
-        this.secretKey = Keys.hmacShaKeyFor(
-                secret.getBytes(StandardCharsets.UTF_8)
-        );
+            @Value("${security.jwt.access-token-expiration}") long accessTokenExpirationSeconds) {
+        byte[] secretBytes = Decoders.BASE64.decode(secret);
+
+        this.secretKey = Keys.hmacShaKeyFor(secretBytes);
 
         this.accessTokenExpirationSeconds = accessTokenExpirationSeconds;
     }
@@ -51,14 +50,11 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUserId(String token) {
-
-        return getClaims(token)
-                .getSubject();
+        return getClaims(token).getSubject();
     }
 
     @Override
     public boolean isTokenValid(String token) {
-
         try {
             getClaims(token);
             return true;

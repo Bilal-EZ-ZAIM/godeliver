@@ -8,8 +8,11 @@ public enum ErrorCode {
     ENDPOINT_NOT_FOUND("error.endpoint.notFound"),
     INTERNAL_ERROR("error.internal"),
     VALIDATION_FAILED("error.validation.failed"),
+    INVALID_ACCESS_TOKEN("error.auth.invalidAccessToken"),
+    INVALID_REFRESH_TOKEN("error.auth.invalidRefreshToken"),
+    ACCESS_TOKEN_EXPIRED("error.auth.accessTokenExpired"),
+    AUTHENTICATION_REQUIRED("error.authentication.required"),
     INVALID_CREDENTIALS("error.auth.invalidCredentials");
-
 
     private final String messageKey;
 

@@ -195,6 +195,57 @@ public class GlobalExceptionHandler {
                                 .body(response);
         }
 
+        // =========================================================================
+        // Invalid access token - 401
+        // =========================================================================
+
+        @ExceptionHandler(InvalidAccessTokenException.class)
+        public ResponseEntity<ApiResponse<Object>> handleInvalidAccessTokenException(
+                        InvalidAccessTokenException ex) {
+
+                log.warn("Invalid or expired access token");
+
+                String message = messageSource.getMessage(
+                                ex.getErrorCode().getMessageKey(),
+                                null,
+                                LocaleContextHolder.getLocale());
+
+                ApiResponse<Object> response = new ApiResponse<>(
+                                false,
+                                HttpStatus.UNAUTHORIZED.value(),
+                                ex.getErrorCode().name(),
+                                message,
+                                List.of(),
+                                List.of());
+
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
+                                .body(response);
+        }
+
+        @ExceptionHandler(InvalidRefreshTokenException.class)
+        public ResponseEntity<ApiResponse<Object>> handleInvalidRefreshTokenException(
+                        InvalidRefreshTokenException exception) {
+
+                ErrorCode errorCode = ErrorCode.INVALID_REFRESH_TOKEN;
+
+                String message = messageSource.getMessage(
+                                errorCode.getMessageKey(),
+                                null,
+                                LocaleContextHolder.getLocale());
+
+                ApiResponse<Object> response = new ApiResponse<>(
+                                false,
+                                HttpStatus.UNAUTHORIZED.value(),
+                                errorCode.name(),
+                                message,
+                                List.of(),
+                                List.of());
+
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
+                                .body(response);
+        }
 
         // =========================================================================
         // Unexpected errors - 500
@@ -223,5 +274,4 @@ public class GlobalExceptionHandler {
                                 .body(response);
         }
 
-        
 }

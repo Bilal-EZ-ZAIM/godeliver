@@ -1,5 +1,10 @@
 package com.aura.godeliver.security;
 
+import com.aura.godeliver.exception.AccessTokenExpiredException;
+import com.aura.godeliver.exception.InvalidAccessTokenException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +25,7 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final JwtAuthenticationFailureHandler failureHandler;
 
     @Override
     protected void doFilterInternal(
@@ -28,8 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader =
+                request.getHeader("Authorization");
 
+        // No Authorization header
         if (authorizationHeader == null
                 || !authorizationHeader.startsWith("Bearer ")) {
 
@@ -39,25 +47,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authorizationHeader.substring(7);
 
-        if (!jwtService.isTokenValid(token)) {
+        try {
+
+            String userId = jwtService.extractUserId(token);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userId,
+                            null,
+                            Collections.emptyList()
+                    );
+
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(authentication);
 
             filterChain.doFilter(request, response);
-            return;
+
+        } catch (ExpiredJwtException exception) {
+
+            SecurityContextHolder.clearContext();
+
+            failureHandler.handle(
+                    response,
+                    new AccessTokenExpiredException()
+            );
+
+        } catch (JwtException | IllegalArgumentException exception) {
+
+            SecurityContextHolder.clearContext();
+
+            failureHandler.handle(
+                    response,
+                    new InvalidAccessTokenException()
+            );
         }
-
-        String userId = jwtService.extractUserId(token);
-
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        userId,
-                        null,
-                        Collections.emptyList()
-                );
-
-        SecurityContextHolder
-                .getContext()
-                .setAuthentication(authentication);
-
-        filterChain.doFilter(request, response);
     }
 }
