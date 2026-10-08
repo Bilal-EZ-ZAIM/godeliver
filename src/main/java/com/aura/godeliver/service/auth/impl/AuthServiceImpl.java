@@ -1,11 +1,11 @@
-package com.aura.godeliver.service.impl;
+package com.aura.godeliver.service.auth.impl;
 
-import com.aura.godeliver.dto.LoginRequestDto;
-import com.aura.godeliver.dto.LoginResponseDto;
-import com.aura.godeliver.dto.LoginResult;
-import com.aura.godeliver.dto.RefreshTokenResult;
-import com.aura.godeliver.dto.RegisterRequestDto;
-import com.aura.godeliver.dto.RegisterResponseDto;
+import com.aura.godeliver.dto.auth.LoginRequestDto;
+import com.aura.godeliver.dto.auth.LoginResponseDto;
+import com.aura.godeliver.dto.auth.LoginResult;
+import com.aura.godeliver.dto.auth.RefreshTokenResult;
+import com.aura.godeliver.dto.auth.RegisterRequestDto;
+import com.aura.godeliver.dto.auth.RegisterResponseDto;
 import com.aura.godeliver.entity.RefreshToken;
 import com.aura.godeliver.entity.User;
 import com.aura.godeliver.exception.EmailAlreadyExistsException;
@@ -13,8 +13,9 @@ import com.aura.godeliver.exception.InvalidCredentialsException;
 import com.aura.godeliver.mapper.UserMapper;
 import com.aura.godeliver.repository.UserRepository;
 import com.aura.godeliver.security.JwtService;
-import com.aura.godeliver.service.AuthService;
-import com.aura.godeliver.service.RefreshTokenService;
+import com.aura.godeliver.service.auth.AuthService;
+import com.aura.godeliver.service.auth.RefreshTokenService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

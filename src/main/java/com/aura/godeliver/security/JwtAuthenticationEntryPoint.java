@@ -1,6 +1,6 @@
 package com.aura.godeliver.security;
 
-import com.aura.godeliver.exception.ApiResponse;
+import com.aura.godeliver.common.response.ApiResponse;
 import com.aura.godeliver.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

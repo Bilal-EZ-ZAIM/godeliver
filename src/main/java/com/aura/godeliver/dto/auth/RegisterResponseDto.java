@@ -1,4 +1,4 @@
-package com.aura.godeliver.dto;
+package com.aura.godeliver.dto.auth;
 
 import java.time.Instant;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.aura.godeliver.exception;
+package com.aura.godeliver.common.response;
 
 import lombok.Getter;
 import lombok.Setter;

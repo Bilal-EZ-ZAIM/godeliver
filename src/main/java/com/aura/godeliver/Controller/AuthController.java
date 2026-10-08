@@ -1,14 +1,15 @@
 package com.aura.godeliver.controller;
 
-import com.aura.godeliver.dto.LoginRequestDto;
-import com.aura.godeliver.dto.LoginResponseDto;
-import com.aura.godeliver.dto.LoginResult;
-import com.aura.godeliver.dto.RegisterRequestDto;
-import com.aura.godeliver.dto.RegisterResponseDto;
-import com.aura.godeliver.exception.ApiResponse;
+import com.aura.godeliver.common.message.MessageService;
+import com.aura.godeliver.common.response.ApiResponse;
+import com.aura.godeliver.dto.auth.LoginRequestDto;
+import com.aura.godeliver.dto.auth.LoginResponseDto;
+import com.aura.godeliver.dto.auth.LoginResult;
+import com.aura.godeliver.dto.auth.RegisterRequestDto;
+import com.aura.godeliver.dto.auth.RegisterResponseDto;
 import com.aura.godeliver.exception.SuccessCode;
-import com.aura.godeliver.service.AuthService;
-import com.aura.godeliver.service.MessageService;
+import com.aura.godeliver.service.auth.AuthService;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

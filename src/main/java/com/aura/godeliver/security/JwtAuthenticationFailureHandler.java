@@ -1,7 +1,7 @@
 package com.aura.godeliver.security;
 
+import com.aura.godeliver.common.response.ApiResponse;
 import com.aura.godeliver.exception.AccessTokenExpiredException;
-import com.aura.godeliver.exception.ApiResponse;
 import com.aura.godeliver.exception.ErrorCode;
 import com.aura.godeliver.exception.InvalidAccessTokenException;
 import com.fasterxml.jackson.databind.ObjectMapper;

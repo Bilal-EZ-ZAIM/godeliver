@@ -1,4 +1,4 @@
-package com.aura.godeliver.dto;
+package com.aura.godeliver.dto.auth;
 
 public record LoginResult(
         LoginResponseDto response,

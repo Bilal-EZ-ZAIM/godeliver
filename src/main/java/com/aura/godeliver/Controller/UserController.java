@@ -1,8 +1,9 @@
 package com.aura.godeliver.controller;
 
-import com.aura.godeliver.dto.RegisterResponseDto;
-import com.aura.godeliver.exception.ApiResponse;
-import com.aura.godeliver.service.UserService;
+import com.aura.godeliver.common.response.ApiResponse;
+import com.aura.godeliver.dto.auth.RegisterResponseDto;
+import com.aura.godeliver.service.user.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

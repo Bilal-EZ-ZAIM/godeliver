@@ -1,11 +1,12 @@
-package com.aura.godeliver.service.impl;
+package com.aura.godeliver.service.user.impl;
 
-import com.aura.godeliver.dto.RegisterResponseDto;
+import com.aura.godeliver.dto.auth.RegisterResponseDto;
 import com.aura.godeliver.entity.User;
 import com.aura.godeliver.exception.ResourceNotFoundException;
 import com.aura.godeliver.mapper.UserMapper;
 import com.aura.godeliver.repository.UserRepository;
-import com.aura.godeliver.service.UserService;
+import com.aura.godeliver.service.user.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

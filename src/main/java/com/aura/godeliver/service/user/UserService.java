@@ -1,8 +1,8 @@
-package com.aura.godeliver.service;
-
-import com.aura.godeliver.dto.RegisterResponseDto;
+package com.aura.godeliver.service.user;
 
 import java.util.UUID;
+
+import com.aura.godeliver.dto.auth.RegisterResponseDto;
 
 public interface UserService {
 

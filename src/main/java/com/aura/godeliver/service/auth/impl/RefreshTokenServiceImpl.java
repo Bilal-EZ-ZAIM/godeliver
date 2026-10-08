@@ -1,11 +1,12 @@
-package com.aura.godeliver.service.impl;
+package com.aura.godeliver.service.auth.impl;
 
-import com.aura.godeliver.dto.RefreshTokenResult;
+import com.aura.godeliver.dto.auth.RefreshTokenResult;
 import com.aura.godeliver.entity.RefreshToken;
 import com.aura.godeliver.exception.InvalidRefreshTokenException;
 import com.aura.godeliver.repository.RefreshTokenRepository;
 import com.aura.godeliver.security.TokenHashService;
-import com.aura.godeliver.service.RefreshTokenService;
+import com.aura.godeliver.service.auth.RefreshTokenService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
